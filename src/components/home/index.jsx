@@ -1,33 +1,41 @@
-import React, { useCallback } from 'react';
-import StickyBar from '../sticky-bar';
-import { inject, observer } from 'mobx-react';
-import { StickyContainer } from 'react-sticky';
+import React, { useCallback, useEffect } from "react";
+import StickyBar from "../sticky-bar";
+import { inject, observer } from "mobx-react";
+import { StickyContainer } from "react-sticky";
 
-import OutbreakMap from '../outbreak-map';
-import Refute from '../refute';
-import RealTime from '../real-time';
-import Disease from '../disease';
+import OutbreakMap from "../outbreak-map";
+import Refute from "../refute";
+import RealTime from "../real-time";
+import Disease from "../disease";
 
-import './index.less';
+import "./index.less";
 
 function Home({ explainModalStore }) {
   const hiddenExplainModal = useCallback(() => {
     explainModalStore.setIsShowExplainModal(false);
+    document.body.style.overflow = "auto";
   }, [explainModalStore]);
+
+  useEffect(() => {
+    if (explainModalStore.isShowExplainModal) {
+      // 解决遮罩层导致页面滚动问题
+      document.body.style.overflow = "hidden";
+    }
+  }, [explainModalStore.isShowExplainModal]);
 
   return (
     <StickyContainer>
-      <div className='top'></div>
+      <div className="top"></div>
       <StickyBar />
       <div
-        className='explain-modal'
+        className="explain-modal"
         style={{
-          display: explainModalStore.isShowExplainModal ? 'block' : 'none'
+          display: explainModalStore.isShowExplainModal ? "block" : "none"
         }}
       >
-        <div className='explain-modal-container'>
-          <div className='explain-modal-title'>数据说明</div>
-          <div className='explain-modal-content'>
+        <div className="explain-modal-container">
+          <div className="explain-modal-title">数据说明</div>
+          <div className="explain-modal-content">
             1. 数据来源：
             <br />
             来自国家卫健委、各省市区卫健委、各省市区政府、港澳台官方渠道公开数据；
@@ -68,7 +76,7 @@ function Home({ explainModalStore }) {
             硅谷团队全力以赴提供权威、准确、及时的疫情数据，如有任何疑问，欢迎通过微信搜索「尚硅谷」留言反馈。
           </div>
         </div>
-        <div className='explain-modal-close' onClick={hiddenExplainModal}></div>
+        <div className="explain-modal-close" onClick={hiddenExplainModal}></div>
       </div>
       <OutbreakMap />
       <Refute />
@@ -78,4 +86,4 @@ function Home({ explainModalStore }) {
   );
 }
 
-export default inject('explainModalStore')(observer(Home));
+export default inject("explainModalStore")(observer(Home));
